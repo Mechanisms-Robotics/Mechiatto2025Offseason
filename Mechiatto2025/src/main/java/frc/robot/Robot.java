@@ -4,6 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -14,9 +20,49 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
+  private static final double FL_X_Distance = 0; //input distance from center of robot to front left wheel in METERS
+  private static final double FL_Y_Distance = 0;
+  private static final double FR_X_Distance = 0;
+  private static final double FR_Y_Distance = 0;
+  private static final double BL_X_Distance = 0;
+  private static final double BL_Y_Distance = 0;
+  private static final double BR_X_Distance = 0;
+  private static final double BR_Y_Distance = 0;
+
   private Command m_autonomousCommand;
 
+  //joystick setup
+  private final Joystick controller = new Joystick(0);
+
   private final RobotContainer m_robotContainer;
+
+  // swerve module locations relative to robot center
+  private final Translation2d frontLeftLocation = new Translation2d(FL_X_Distance, FL_Y_Distance); 
+  private final Translation2d frontRightLocation = new Translation2d(FR_X_Distance, FR_Y_Distance);
+  private final Translation2d backLeftLocation = new Translation2d(BL_X_Distance, BL_Y_Distance);
+  private final Translation2d backRightLocation = new Translation2d(BR_X_Distance, BR_Y_Distance);
+  
+  //Kinematics object
+  private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
+
+  // chassis speeds: (forward, left, rotation)
+
+  ChassisSpeeds speeds = new ChassisSpeeds(1, 1, 1);
+  
+  // convert to module states
+   SwerveModuleState[] moduleStates = m_kinematics.toSwerveModuleStates(speeds);
+
+    SwerveModuleState frontLeft = moduleStates[0];
+    SwerveModuleState frontRight = moduleStates[1];
+    SwerveModuleState backLeft = moduleStates[2];
+    SwerveModuleState backRight = moduleStates[3];
+
+    //include module angle optimization??
+
+    //include cosine compensation??
+
+    
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -79,7 +125,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+  }
 
   @Override
   public void testInit() {
